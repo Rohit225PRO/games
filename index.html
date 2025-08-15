@@ -23,8 +23,9 @@
             min-height: 100vh;
             margin: 0;
             color: #333;
-            overflow-y: auto;
             position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .container {
@@ -58,12 +59,12 @@
         .game-area {
             position: relative;
             width: 100%;
-            height: calc(100vh - 80px);
+            height: calc(100vh - 80px); /* Leave space for score info */
             background: #f0f8ff;
             border: 2px solid var(--primary-pink);
             border-radius: 15px;
             overflow: hidden;
-            touch-action: none;
+            touch-action: none; /* Prevents default mobile actions */
         }
         
         .score-info {
@@ -88,9 +89,6 @@
             cursor: pointer;
             z-index: 10;
             animation: fade-in 0.5s ease;
-            font-size: 30px; /* Added font size for emojis */
-            text-align: center;
-            line-height: 30px;
         }
         
         .character {
@@ -164,6 +162,7 @@
         
         .character-selection {
             display: flex;
+            flex-wrap: wrap; /* Allows wrapping on small screens */
             gap: 20px;
             justify-content: center;
             margin-bottom: 20px;
@@ -252,7 +251,6 @@
             max-width: 100%;
             height: auto;
             margin-bottom: 20px;
-            font-size: 5rem; /* Used for emojis */
         }
 
         #score-display {
@@ -319,6 +317,13 @@
 </head>
 <body>
 
+    <!--
+        CORRECTION: The src for the audio was a placeholder.
+        It has been changed to a relative path that matches your file structure.
+    -->
+    <audio id="backgroundMusic" src="audio/sugary-sweet.mp3" autoplay loop></audio>
+    <button id="musicToggle">🎶</button>
+
     <div class="container" id="gameContainer">
         
         <div class="start-screen" id="startScreen">
@@ -338,12 +343,16 @@
             <div class="input-group">
                 <label>Choose Your Character:</label>
                 <div class="character-selection">
+                    <!--
+                        CORRECTION: Replaced the placeholder `__file_name__` with the correct
+                        relative path to the image file.
+                    -->
                     <div class="character-card selected" id="rohitCard" data-character="rohit">
-                        <img src="image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449" alt="Rohit Character">
+                        <img src="media/image_6fa148.jpg" alt="Rohit Character">
                         <p>Rohit</p>
                     </div>
                     <div class="character-card" id="venlaCard" data-character="venla">
-                        <img src="image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310" alt="Venla Character">
+                        <img src="media/image_6fa169.jpg" alt="Venla Character">
                         <p>Venla</p>
                     </div>
                 </div>
@@ -371,8 +380,12 @@
 
         <div class="end-screen" id="endScreen" style="display:none;">
             <h2 id="endMessage"></h2>
-            <!-- Changed this to a span to hold emoji or text -->
-            <div id="endAnimation"></div>
+            <!--
+                CORRECTION: The end animation image was a placeholder URL.
+                This has been changed to a relative path. You'll need to add
+                `end-animation.png` to your `/media` folder.
+            -->
+            <img id="endAnimation" src="media/heart.png" alt="Game End Animation">
             <button id="downloadCertificateBtn">Download Certificate</button>
             <button id="restartGameBtn">Play Again</button>
         </div>
@@ -381,8 +394,11 @@
             <div class="certificate-container" id="certificate">
                 <h2>Certificate of Love</h2>
                 <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
-                <!-- Changed this to a span to hold an emoji -->
-                <p style="font-size: 5rem; margin: 20px auto;">❤️</p>
+                <!--
+                    CORRECTION: The certificate heart image path was incorrect.
+                    This has been changed to `media/heart.png` to match your file structure.
+                -->
+                <img id="certImage" src="media/heart.png" alt="Heart">
                 <p>A bond as strong as this is unbreakable.</p>
             </div>
             <button id="backToMenuBtn">Back to Menu</button>
@@ -393,273 +409,258 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        const startScreen = document.getElementById('startScreen');
-        const gameScreen = document.getElementById('gameScreen');
-        const endScreen = document.getElementById('endScreen');
-        const certificateScreen = document.getElementById('certificateScreen');
+        document.addEventListener('DOMContentLoaded', () => {
+            const startScreen = document.getElementById('startScreen');
+            const gameScreen = document.getElementById('gameScreen');
+            const endScreen = document.getElementById('endScreen');
+            const certificateScreen = document.getElementById('certificateScreen');
+            const musicToggleBtn = document.getElementById('musicToggle');
+            const backgroundMusic = document.getElementById('backgroundMusic');
 
-        const startGameBtn = document.getElementById('startGameBtn');
-        const restartGameBtn = document.getElementById('restartGameBtn');
-        const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
-        const backToMenuBtn = document.getElementById('backToMenuBtn');
-        
-        const gameArea = document.getElementById('gameArea');
-        const heartsCaughtSpan = document.getElementById('heartsCaught');
-        const heartsTargetSpan = document.getElementById('heartsTarget');
-        const targetInfo = document.getElementById('targetInfo');
-        const playerCharacter = document.getElementById('playerCharacter');
-        
-        const endMessage = document.getElementById('endMessage');
-        const endAnimation = document.getElementById('endAnimation');
-        
-        const p1NameInput = document.getElementById('p1Name');
-        const p2NameInput = document.getElementById('p2Name');
-        const characterSelect = document.getElementById('characterSelect');
-
-        const rohitCard = document.getElementById('rohitCard');
-        const venlaCard = document.getElementById('venlaCard');
-
-        const targetHeartsInput = document.getElementById('targetHearts');
-
-        let heartsCollected = 0;
-        let heartGenerationInterval;
-        let isGameOver = false;
-        let playerCharacterImage;
-        let partnerCharacterName;
-        let playerCharacterName;
-        let targetHearts = 0;
-        let isInfiniteMode = false;
-
-        const characterImageUrls = {
-            rohit: 'image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
-            venla: 'image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
-        };
-
-        rohitCard.addEventListener('click', () => {
-            selectCharacter('rohit');
-        });
-
-        venlaCard.addEventListener('click', () => {
-            selectCharacter('venla');
-        });
-
-        function selectCharacter(characterName) {
-            document.querySelectorAll('.character-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById(`${characterName}Card`).classList.add('selected');
-            characterSelect.value = characterName;
-        }
-
-        startGameBtn.addEventListener('click', () => {
-            playerCharacterName = p1NameInput.value || 'Player';
-            partnerCharacterName = p2NameInput.value || 'Partner';
-            const selectedCharacter = characterSelect.value;
-            playerCharacterImage = characterImageUrls[selectedCharacter];
-            targetHearts = parseInt(targetHeartsInput.value, 10);
-            isInfiniteMode = targetHearts === 0;
-
-            if (isInfiniteMode) {
-                targetInfo.style.display = 'none';
-            } else {
-                targetInfo.style.display = 'inline';
-                heartsTargetSpan.textContent = targetHearts;
-            }
-
-            heartsCollected = 0;
-            heartsCaughtSpan.textContent = heartsCollected;
+            const startGameBtn = document.getElementById('startGameBtn');
+            const restartGameBtn = document.getElementById('restartGameBtn');
+            const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
+            const backToMenuBtn = document.getElementById('backToMenuBtn');
             
-            isGameOver = false;
+            const gameArea = document.getElementById('gameArea');
+            const heartsCaughtSpan = document.getElementById('heartsCaught');
+            const heartsTargetSpan = document.getElementById('heartsTarget');
+            const targetInfo = document.getElementById('targetInfo');
+            const playerCharacter = document.getElementById('playerCharacter');
             
-            playerCharacter.src = playerCharacterImage;
+            const endMessage = document.getElementById('endMessage');
+            const endAnimation = document.getElementById('endAnimation');
+            
+            const p1NameInput = document.getElementById('p1Name');
+            const p2NameInput = document.getElementById('p2Name');
+            const characterSelect = document.getElementById('characterSelect');
 
-            startScreen.style.display = 'none';
-            endScreen.style.display = 'none';
-            certificateScreen.style.display = 'none';
-            gameScreen.style.display = 'flex';
-            
-            startGame();
-        });
+            const rohitCard = document.getElementById('rohitCard');
+            const venlaCard = document.getElementById('venlaCard');
 
-        restartGameBtn.addEventListener('click', () => {
-            gameArea.querySelectorAll('.heart').forEach(heart => heart.remove());
-            endScreen.style.display = 'none';
-            startScreen.style.display = 'flex';
-        });
-        
-        backToMenuBtn.addEventListener('click', () => {
-            certificateScreen.style.display = 'none';
-            startScreen.style.display = 'flex';
-        });
+            const targetHeartsInput = document.getElementById('targetHearts');
 
-        downloadCertificateBtn.addEventListener('click', () => {
-            endScreen.style.display = 'none';
-            certificateScreen.style.display = 'flex';
-            
-            document.getElementById('certPlayerName').textContent = playerCharacterName;
-            document.getElementById('certPartnerName').textContent = partnerCharacterName;
-            document.getElementById('certScore').textContent = heartsCollected;
-            
-            setTimeout(() => {
-                 html2canvas(document.getElementById('certificate')).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'certificate-of-love.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                });
-            }, 500);
-        });
+            let heartsCollected = 0;
+            let heartGenerationInterval;
+            let isGameOver = false;
+            let playerCharacterImage;
+            let partnerCharacterName;
+            let playerCharacterName;
+            let targetHearts = 0;
+            let isInfiniteMode = false;
 
-        function startGame() {
-            clearInterval(heartGenerationInterval);
-            heartGenerationInterval = setInterval(() => {
-                if (isGameOver) {
-                    clearInterval(heartGenerationInterval);
-                    return;
-                }
-                createHeart();
-            }, 500);
-        }
+            // CORRECTED: The image paths are now simple, relative paths.
+            const characterImages = {
+                rohit: 'media/image_6fa148.jpg',
+                venla: 'media/image_6fa169.jpg'
+            };
+            // CORRECTED: The end animation paths are now relative paths.
+            // You should replace these with your actual files if they are different.
+            const endAnimations = {
+                win: 'media/heart.png', 
+                lose: 'media/heart.png'
+            };
+            // CORRECTED: The falling heart image is now a local file.
+            const heartImage = 'media/heart.png';
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.textContent = '❤️'; // Use a heart emoji
+            // REMOVED: This block is no longer needed since the img src is now correct.
+            // document.querySelectorAll('img[data-filename]').forEach(img => {
+            //     const filename = img.getAttribute('data-filename');
+            //     img.src = `media/${filename}`;
+            // });
 
-            const gameAreaRect = gameArea.getBoundingClientRect();
-            const startX = Math.random() * (gameAreaRect.width - 40) + 20;
-            
-            heart.style.left = `${startX}px`;
-            heart.style.top = '0px';
-            
-            gameArea.appendChild(heart);
-            
-            let currentY = 0;
-            const speed = 1 + Math.random();
-            const fallInterval = setInterval(() => {
-                if (isGameOver) {
-                    clearInterval(fallInterval);
-                    heart.remove();
-                    return;
-                }
-                currentY += speed;
-                heart.style.top = `${currentY}px`;
+            // Listen for character selection clicks
+            rohitCard.addEventListener('click', () => {
+                rohitCard.classList.add('selected');
+                venlaCard.classList.remove('selected');
+                characterSelect.value = 'rohit';
+                p1NameInput.value = 'Rohit';
+                p2NameInput.value = 'Venla';
+            });
 
-                if (checkCollision(heart, playerCharacter)) {
-                    collectHeart(heart);
-                    clearInterval(fallInterval);
-                } else if (currentY > gameAreaRect.height) {
-                    clearInterval(fallInterval);
-                    heart.remove();
-                }
-            }, 10);
-        }
+            venlaCard.addEventListener('click', () => {
+                venlaCard.classList.add('selected');
+                rohitCard.classList.remove('selected');
+                characterSelect.value = 'venla';
+                p1NameInput.value = 'Venla';
+                p2NameInput.value = 'Rohit';
+            });
 
-        function checkCollision(heart, character) {
-            const heartRect = heart.getBoundingClientRect();
-            const characterRect = character.getBoundingClientRect();
-            
-            return (
-                heartRect.bottom >= characterRect.top &&
-                heartRect.top <= characterRect.bottom &&
-                heartRect.right >= characterRect.left &&
-                heartRect.left <= characterRect.right
-            );
-        }
-
-        function collectHeart(heart) {
-            heartsCollected++;
-            heartsCaughtSpan.textContent = heartsCollected;
-            
-            heart.remove();
-            
-            confetti({
-                particleCount: 50,
-                spread: 70,
-                origin: {
-                    x: (heart.getBoundingClientRect().left + heart.getBoundingClientRect().right) / (2 * window.innerWidth),
-                    y: (heart.getBoundingClientRect().top + heart.getBoundingClientRect().bottom) / (2 * window.innerHeight)
+            musicToggleBtn.addEventListener('click', () => {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                    musicToggleBtn.textContent = '🎶';
+                } else {
+                    backgroundMusic.pause();
+                    musicToggleBtn.textContent = '🔇';
                 }
             });
 
-            if (!isInfiniteMode && heartsCollected >= targetHearts) {
-                endGame(true);
-            }
-        }
-
-        function endGame(isWin) {
-            isGameOver = true;
-            clearInterval(heartGenerationInterval);
-            gameArea.querySelectorAll('.heart').forEach(heart => heart.remove());
-
-            gameScreen.style.display = 'none';
-            endScreen.style.display = 'flex';
+            const updateHeartsDisplay = () => {
+                heartsCaughtSpan.textContent = heartsCollected;
+            };
             
-            if (isWin) {
-                endMessage.textContent = 'You Proved Your Love! ❤️';
-                endAnimation.innerHTML = '💖✨'; // Use emojis
-                confetti({
-                    particleCount: 200,
-                    spread: 180,
-                    origin: { y: 0.6 }
-                });
-            } else {
-                endMessage.textContent = 'Game Over';
-                endAnimation.textContent = '💔'; // Use an emoji
+            const createCelebrationEmoji = () => {
+                const emoji = document.createElement('span');
+                emoji.textContent = '❤️'; 
+                emoji.classList.add('celebration-emoji');
+                emoji.style.fontSize = `${Math.random() * 20 + 10}px`;
+                emoji.style.left = `${Math.random() * gameArea.clientWidth}px`;
+                emoji.style.top = `-${Math.random() * 50}px`;
+                gameArea.appendChild(emoji);
+
+                let top = -50;
+                const fallInterval = setInterval(() => {
+                    top += 2;
+                    emoji.style.top = `${top}px`;
+                    if (top > gameArea.clientHeight) {
+                        clearInterval(fallInterval);
+                        emoji.remove();
+                    }
+                }, 20);
+            };
+            
+            const createHeart = () => {
+                if (isGameOver) return;
+                const heart = document.createElement('img');
+                heart.src = heartImage;
+                heart.classList.add('heart');
+                heart.style.left = `${Math.random() * (gameArea.clientWidth - 30)}px`;
+                gameArea.appendChild(heart);
+
+                let top = -30;
+                const fallInterval = setInterval(() => {
+                    if (isGameOver) {
+                        clearInterval(fallInterval);
+                        heart.remove();
+                        return;
+                    }
+                    top += 1.5;
+                    heart.style.top = `${top}px`;
+                    if (top > gameArea.clientHeight) {
+                        clearInterval(fallInterval);
+                        heart.remove();
+                        gameOver(false);
+                    }
+                }, 10);
+                
+                heart.addEventListener('mousedown', catchHeart);
+                heart.addEventListener('touchstart', catchHeart);
+            };
+            
+            function catchHeart(e) {
+                e.preventDefault();
+                if (isGameOver) return;
+                heartsCollected++;
+                updateHeartsDisplay();
+                this.remove();
+                
+                if (!isInfiniteMode && heartsCollected >= targetHearts) {
+                    gameOver(true);
+                }
             }
             
-            const scoreDisplay = document.getElementById('score-display');
-            if (scoreDisplay) {
-                 scoreDisplay.textContent = `Final Score: ${heartsCollected}`;
-            }
-        }
-        
-        let isDragging = false;
-        let gameAreaRect;
+            const gameOver = (isWin) => {
+                isGameOver = true;
+                clearInterval(heartGenerationInterval);
+                document.querySelectorAll('.heart').forEach(heart => heart.remove());
 
-        gameArea.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            gameAreaRect = gameArea.getBoundingClientRect();
-        });
+                startScreen.style.display = 'none';
+                gameScreen.style.display = 'none';
+                certificateScreen.style.display = 'none';
+                endScreen.style.display = 'flex';
+                
+                if (isWin) {
+                    if (characterSelect.value === 'rohit') {
+                        endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
+                    } else {
+                        endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
+                    }
+                    endAnimation.src = endAnimations.win;
+                    
+                    // Trigger confetti effect
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    
+                    let emojiRainInterval = setInterval(createCelebrationEmoji, 50);
+                    setTimeout(() => clearInterval(emojiRainInterval), 3000);
 
-        gameArea.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const x = e.clientX - gameAreaRect.left;
-                moveCharacter(x);
-            }
-        });
+                } else {
+                    if (characterSelect.value === 'rohit') {
+                        endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
+                    } else {
+                        endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
+                    }
+                    endAnimation.src = endAnimations.lose;
+                }
+            };
 
-        gameArea.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+            const startGame = () => {
+                playerCharacterName = p1NameInput.value || 'Rohit';
+                partnerCharacterName = p2NameInput.value || 'Venla';
+                
+                // CORRECTED: The character image is now loaded from the correct local path.
+                playerCharacterImage = characterImages[characterSelect.value];
+                targetHearts = parseInt(targetHeartsInput.value);
 
-        gameArea.addEventListener('mouseleave', () => {
-            isDragging = false;
-        });
+                isInfiniteMode = (targetHearts === 0 || isNaN(targetHearts));
 
-        gameArea.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            gameAreaRect = gameArea.getBoundingClientRect();
-        });
+                if (isInfiniteMode) {
+                    targetInfo.style.display = 'none';
+                } else {
+                    targetInfo.style.display = 'inline';
+                    heartsTargetSpan.textContent = targetHearts;
+                }
 
-        gameArea.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (isDragging) {
-                const x = e.touches[0].clientX - gameAreaRect.left;
-                moveCharacter(x);
-            }
-        });
+                heartsCollected = 0;
+                isGameOver = false;
+                updateHeartsDisplay();
 
-        gameArea.addEventListener('touchend', () => {
-            isDragging = false;
-        });
+                startScreen.style.display = 'none';
+                gameScreen.style.display = 'flex';
+                endScreen.style.display = 'none';
+                certificateScreen.style.display = 'none';
 
-        function moveCharacter(x) {
-            const characterWidth = playerCharacter.offsetWidth;
-            const newPos = x - characterWidth / 2;
+                playerCharacter.src = playerCharacterImage;
+
+                heartGenerationInterval = setInterval(createHeart, 800);
+            };
+
+            const restartGame = () => {
+                startScreen.style.display = 'flex';
+                gameScreen.style.display = 'none';
+                endScreen.style.display = 'none';
+                certificateScreen.style.display = 'none';
+            };
+
+            const downloadCertificate = () => {
+                document.getElementById('certPlayerName').textContent = playerCharacterName;
+                document.getElementById('certPartnerName').textContent = partnerCharacterName;
+                document.getElementById('certScore').textContent = heartsCollected;
+                
+                startScreen.style.display = 'none';
+                gameScreen.style.display = 'none';
+                endScreen.style.display = 'none';
+                certificateScreen.style.display = 'flex';
+                
+                setTimeout(() => {
+                    html2canvas(document.getElementById('certificate')).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'love_certificate.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                }, 100);
+            };
             
-            if (newPos > 0 && newPos < gameAreaRect.width - characterWidth) {
-                playerCharacter.style.left = `${newPos}px`;
-            }
-        }
+            startGameBtn.addEventListener('click', startGame);
+            restartGameBtn.addEventListener('click', restartGame);
+            backToMenuBtn.addEventListener('click', restartGame);
+            downloadCertificateBtn.addEventListener('click', downloadCertificate);
+        });
     </script>
 </body>
 </html>
