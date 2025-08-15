@@ -23,7 +23,7 @@
             min-height: 100vh;
             margin: 0;
             color: #333;
-            overflow-y: auto; /* Allow vertical scrolling */
+            overflow-y: auto;
             position: relative;
         }
 
@@ -58,12 +58,12 @@
         .game-area {
             position: relative;
             width: 100%;
-            height: calc(100vh - 80px); /* Leave space for score info */
+            height: calc(100vh - 80px);
             background: #f0f8ff;
             border: 2px solid var(--primary-pink);
             border-radius: 15px;
             overflow: hidden;
-            touch-action: none; /* Prevents default mobile actions */
+            touch-action: none;
         }
         
         .score-info {
@@ -82,6 +82,7 @@
 
         .heart, .celebration-emoji {
             position: absolute;
+            font-size: 30px;
             width: 30px;
             height: 30px;
             user-select: none;
@@ -244,10 +245,9 @@
             color: var(--primary-pink);
             margin-bottom: 20px;
         }
-
+        
         #endAnimation {
-            max-width: 100%;
-            height: auto;
+            font-size: 5rem;
             margin-bottom: 20px;
         }
 
@@ -295,28 +295,9 @@
                 flex-direction: column;
             }
         }
-
-        #musicToggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: var(--primary-pink);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 100;
-        }
     </style>
 </head>
 <body>
-
-    <audio id="backgroundMusic" src="./audio/Sugary-Sweet.mp3" autoplay loop></audio>
-    <button id="musicToggle">🎶</button>
 
     <div class="container" id="gameContainer">
         
@@ -338,12 +319,12 @@
                 <label>Choose Your Character:</label>
                 <div class="character-selection">
                     <div class="character-card selected" id="rohitCard" data-character="rohit">
-                        <!-- Corrected image source -->
+                        <!-- Corrected image source for uploaded file -->
                         <img src="image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449" alt="Rohit Character">
                         <p>Rohit</p>
                     </div>
                     <div class="character-card" id="venlaCard" data-character="venla">
-                        <!-- Corrected image source -->
+                        <!-- Corrected image source for uploaded file -->
                         <img src="image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310" alt="Venla Character">
                         <p>Venla</p>
                     </div>
@@ -357,7 +338,6 @@
                 <small>Set a goal to play a romantic story. Choose 0 for infinite mode.</small>
             </div>
             
-            <!-- Combined the two start buttons into one -->
             <button id="startGameBtn">Start Game</button>
         </div>
 
@@ -374,7 +354,8 @@
 
         <div class="end-screen" id="endScreen" style="display:none;">
             <h2 id="endMessage"></h2>
-            <img id="endAnimation" src="" alt="Game End Animation">
+            <!-- Updated to display a text/emoji instead of a missing image -->
+            <div id="endAnimation"></div> 
             <button id="downloadCertificateBtn">Download Certificate</button>
             <button id="restartGameBtn">Play Again</button>
         </div>
@@ -383,24 +364,25 @@
             <div class="certificate-container" id="certificate">
                 <h2>Certificate of Love</h2>
                 <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
-                <img id="certImage" src="./images/heart.png" alt="Heart">
+                <!-- Updated to use a heart emoji -->
+                <p style="font-size: 5rem; margin: 20px auto;">❤️</p>
                 <p>A bond as strong as this is unbreakable.</p>
             </div>
             <button id="backToMenuBtn">Back to Menu</button>
         </div>
-
     </div>
 
-    <!-- Added confetti.js to handle celebratory effects -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
+        // Start of self-contained JavaScript code
+        // This version removes references to missing external files (.mp3, .png, .gif)
+        // and uses emojis or text for the game's visuals.
+        
         const startScreen = document.getElementById('startScreen');
         const gameScreen = document.getElementById('gameScreen');
         const endScreen = document.getElementById('endScreen');
         const certificateScreen = document.getElementById('certificateScreen');
-        const musicToggleBtn = document.getElementById('musicToggle');
-        const backgroundMusic = document.getElementById('backgroundMusic');
 
         const startGameBtn = document.getElementById('startGameBtn');
         const restartGameBtn = document.getElementById('restartGameBtn');
@@ -434,16 +416,18 @@
         let targetHearts = 0;
         let isInfiniteMode = false;
 
-        // Corrected the image paths
+        // Use the uploaded image sources directly from the file system
         const characterImages = {
             rohit: 'image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
             venla: 'image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
         };
-        const endAnimations = {
-            win: './images/win_animation.gif',
-            lose: './images/lose_animation.gif'
+
+        // Replaced external images with emojis for a self-contained solution
+        const endAnimationEmojis = {
+            win: '❤️‍🔥', // Flaming heart for win
+            lose: '💔'  // Broken heart for lose
         };
-        const heartImage = './images/heart.png';
+        const heartEmoji = '❤️'; // Main heart for the game
 
         // Listen for character selection clicks
         rohitCard.addEventListener('click', () => {
@@ -462,45 +446,15 @@
             p2NameInput.value = 'Rohit';
         });
 
-        musicToggleBtn.addEventListener('click', () => {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play();
-                musicToggleBtn.textContent = '🎶';
-            } else {
-                backgroundMusic.pause();
-                musicToggleBtn.textContent = '🔇';
-            }
-        });
-
         const updateHeartsDisplay = () => {
             heartsCaughtSpan.textContent = heartsCollected;
         };
         
-        // Function to create and drop celebratory flowers/emojis
-        const createCelebrationEmoji = () => {
-            const emoji = document.createElement('span');
-            emoji.textContent = '❤️'; // Using a heart emoji as the "flower"
-            emoji.classList.add('celebration-emoji');
-            emoji.style.fontSize = `${Math.random() * 20 + 10}px`;
-            emoji.style.left = `${Math.random() * gameArea.clientWidth}px`;
-            emoji.style.top = `-${Math.random() * 50}px`;
-            gameArea.appendChild(emoji);
-
-            let top = -50;
-            const fallInterval = setInterval(() => {
-                top += 2;
-                emoji.style.top = `${top}px`;
-                if (top > gameArea.clientHeight) {
-                    clearInterval(fallInterval);
-                    emoji.remove();
-                }
-            }, 20);
-        };
-        
         const createHeart = () => {
             if (isGameOver) return;
-            const heart = document.createElement('img');
-            heart.src = heartImage;
+            // Create a span with an emoji instead of an image element
+            const heart = document.createElement('span');
+            heart.textContent = heartEmoji;
             heart.classList.add('heart');
             heart.style.left = `${Math.random() * (gameArea.clientWidth - 30)}px`;
             gameArea.appendChild(heart);
@@ -517,10 +471,14 @@
                 if (top > gameArea.clientHeight) {
                     clearInterval(fallInterval);
                     heart.remove();
-                    gameOver(false); // Game over if a heart is missed
+                    // Don't end the game if a heart is missed in infinite mode
+                    if (!isInfiniteMode) {
+                        gameOver(false);
+                    }
                 }
             }, 10);
             
+            // Added both mousedown and touchstart for better mobile support
             heart.addEventListener('mousedown', catchHeart);
             heart.addEventListener('touchstart', catchHeart);
         };
@@ -549,40 +507,34 @@
             
             if (isWin) {
                 if (characterSelect.value === 'rohit') {
-                     endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
+                    endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
                 } else {
-                     endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
+                    endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
                 }
-                endAnimation.src = endAnimations.win;
+                endAnimation.textContent = endAnimationEmojis.win;
                 
-                // Trigger celebratory confetti and flower rain
+                // Trigger celebratory confetti
                 confetti({
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 }
                 });
-                
-                let emojiRainInterval = setInterval(createCelebrationEmoji, 50);
-                setTimeout(() => clearInterval(emojiRainInterval), 3000); // Stop rain after 3s
-
             } else {
                 if (characterSelect.value === 'rohit') {
-                     endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
+                    endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
                 } else {
-                     endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
+                    endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
                 }
-                endAnimation.src = endAnimations.lose;
+                endAnimation.textContent = endAnimationEmojis.lose;
             }
         };
 
-        // Simplified startGame function with a single button
         const startGame = () => {
             playerCharacterName = p1NameInput.value || 'Rohit';
             partnerCharacterName = p2NameInput.value || 'Venla';
             playerCharacterImage = characterImages[characterSelect.value];
             targetHearts = parseInt(targetHeartsInput.value) || 50;
 
-            // Determine if it's infinite mode based on input value
             isInfiniteMode = (targetHearts === 0);
 
             if (isInfiniteMode) {
@@ -639,6 +591,6 @@
         backToMenuBtn.addEventListener('click', restartGame);
         downloadCertificateBtn.addEventListener('click', downloadCertificate);
     </script>
-
 </body>
 </html>
+
