@@ -82,13 +82,15 @@
 
         .heart, .celebration-emoji {
             position: absolute;
-            font-size: 30px;
             width: 30px;
             height: 30px;
             user-select: none;
             cursor: pointer;
             z-index: 10;
             animation: fade-in 0.5s ease;
+            font-size: 30px; /* Added font size for emojis */
+            text-align: center;
+            line-height: 30px;
         }
         
         .character {
@@ -245,10 +247,12 @@
             color: var(--primary-pink);
             margin-bottom: 20px;
         }
-        
+
         #endAnimation {
-            font-size: 5rem;
+            max-width: 100%;
+            height: auto;
             margin-bottom: 20px;
+            font-size: 5rem; /* Used for emojis */
         }
 
         #score-display {
@@ -295,6 +299,22 @@
                 flex-direction: column;
             }
         }
+
+        #musicToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -318,13 +338,12 @@
             <div class="input-group">
                 <label>Choose Your Character:</label>
                 <div class="character-selection">
-                    <!-- Updated to use the new PNG files -->
                     <div class="character-card selected" id="rohitCard" data-character="rohit">
-                        <img src="rohit.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100/ffc0cb/ff69b4?text=Rohit'" alt="Rohit Character">
+                        <img src="image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449" alt="Rohit Character">
                         <p>Rohit</p>
                     </div>
                     <div class="character-card" id="venlaCard" data-character="venla">
-                        <img src="venla.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100/ffc0cb/ff69b4?text=Venla'" alt="Venla Character">
+                        <img src="image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310" alt="Venla Character">
                         <p>Venla</p>
                     </div>
                 </div>
@@ -346,14 +365,14 @@
                 <span id="targetInfo" style="display:none;">/ <span id="heartsTarget">0</span></span>
             </div>
             <div class="game-area" id="gameArea">
-                <!-- Character image will be set by JavaScript -->
                 <img id="playerCharacter" class="character" src="" alt="Player Character">
             </div>
         </div>
 
         <div class="end-screen" id="endScreen" style="display:none;">
             <h2 id="endMessage"></h2>
-            <div id="endAnimation"></div> 
+            <!-- Changed this to a span to hold emoji or text -->
+            <div id="endAnimation"></div>
             <button id="downloadCertificateBtn">Download Certificate</button>
             <button id="restartGameBtn">Play Again</button>
         </div>
@@ -362,17 +381,18 @@
             <div class="certificate-container" id="certificate">
                 <h2>Certificate of Love</h2>
                 <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
+                <!-- Changed this to a span to hold an emoji -->
                 <p style="font-size: 5rem; margin: 20px auto;">❤️</p>
                 <p>A bond as strong as this is unbreakable.</p>
             </div>
             <button id="backToMenuBtn">Back to Menu</button>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        // Start of self-contained JavaScript code
         const startScreen = document.getElementById('startScreen');
         const gameScreen = document.getElementById('gameScreen');
         const endScreen = document.getElementById('endScreen');
@@ -410,11 +430,9 @@
         let targetHearts = 0;
         let isInfiniteMode = false;
 
-        // The image URLs are now just the file names.
-        // The onerror attribute in the HTML provides a fallback.
         const characterImageUrls = {
-            rohit: 'rohit.png',
-            venla: 'venla.png'
+            rohit: 'image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
+            venla: 'image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
         };
 
         rohitCard.addEventListener('click', () => {
@@ -451,7 +469,6 @@
             
             isGameOver = false;
             
-            // Set the character image
             playerCharacter.src = playerCharacterImage;
 
             startScreen.style.display = 'none';
@@ -463,7 +480,6 @@
         });
 
         restartGameBtn.addEventListener('click', () => {
-            // Clear any hearts from the previous game
             gameArea.querySelectorAll('.heart').forEach(heart => heart.remove());
             endScreen.style.display = 'none';
             startScreen.style.display = 'flex';
@@ -482,7 +498,6 @@
             document.getElementById('certPartnerName').textContent = partnerCharacterName;
             document.getElementById('certScore').textContent = heartsCollected;
             
-            // Wait for the elements to render before taking the screenshot
             setTimeout(() => {
                  html2canvas(document.getElementById('certificate')).then(canvas => {
                     const link = document.createElement('a');
@@ -493,13 +508,8 @@
             }, 500);
         });
 
-        let hearts = [];
-
         function startGame() {
-            // Stop any existing game intervals
             clearInterval(heartGenerationInterval);
-
-            // Start generating hearts
             heartGenerationInterval = setInterval(() => {
                 if (isGameOver) {
                     clearInterval(heartGenerationInterval);
@@ -512,19 +522,18 @@
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.textContent = '❤️'; // Use a heart emoji for simplicity and reliability
+            heart.textContent = '❤️'; // Use a heart emoji
 
             const gameAreaRect = gameArea.getBoundingClientRect();
-            const startX = Math.random() * (gameAreaRect.width - 40) + 20; // Ensure heart is within bounds
+            const startX = Math.random() * (gameAreaRect.width - 40) + 20;
             
             heart.style.left = `${startX}px`;
             heart.style.top = '0px';
             
             gameArea.appendChild(heart);
             
-            // Animate heart movement
             let currentY = 0;
-            const speed = 1 + Math.random(); // hearts fall at different speeds
+            const speed = 1 + Math.random();
             const fallInterval = setInterval(() => {
                 if (isGameOver) {
                     clearInterval(fallInterval);
@@ -534,12 +543,10 @@
                 currentY += speed;
                 heart.style.top = `${currentY}px`;
 
-                // Check for collision with the player character
                 if (checkCollision(heart, playerCharacter)) {
                     collectHeart(heart);
                     clearInterval(fallInterval);
                 } else if (currentY > gameAreaRect.height) {
-                    // If heart falls off the screen
                     clearInterval(fallInterval);
                     heart.remove();
                 }
@@ -550,7 +557,6 @@
             const heartRect = heart.getBoundingClientRect();
             const characterRect = character.getBoundingClientRect();
             
-            // Check for overlap
             return (
                 heartRect.bottom >= characterRect.top &&
                 heartRect.top <= characterRect.bottom &&
@@ -565,7 +571,6 @@
             
             heart.remove();
             
-            // Confetti effect on heart collection
             confetti({
                 particleCount: 50,
                 spread: 70,
@@ -575,7 +580,6 @@
                 }
             });
 
-            // Check for win condition
             if (!isInfiniteMode && heartsCollected >= targetHearts) {
                 endGame(true);
             }
@@ -591,8 +595,7 @@
             
             if (isWin) {
                 endMessage.textContent = 'You Proved Your Love! ❤️';
-                endAnimation.innerHTML = '💖✨';
-                // Confetti for the win
+                endAnimation.innerHTML = '💖✨'; // Use emojis
                 confetti({
                     particleCount: 200,
                     spread: 180,
@@ -600,15 +603,15 @@
                 });
             } else {
                 endMessage.textContent = 'Game Over';
-                endAnimation.textContent = '�';
+                endAnimation.textContent = '💔'; // Use an emoji
             }
             
-            // Show the final score
             const scoreDisplay = document.getElementById('score-display');
-            scoreDisplay.textContent = `Final Score: ${heartsCollected}`;
+            if (scoreDisplay) {
+                 scoreDisplay.textContent = `Final Score: ${heartsCollected}`;
+            }
         }
         
-        // Character movement with mouse/touch
         let isDragging = false;
         let gameAreaRect;
 
@@ -632,14 +635,13 @@
             isDragging = false;
         });
 
-        // Touch events for mobile
         gameArea.addEventListener('touchstart', (e) => {
             isDragging = true;
             gameAreaRect = gameArea.getBoundingClientRect();
         });
 
         gameArea.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Prevent scrolling
+            e.preventDefault();
             if (isDragging) {
                 const x = e.touches[0].clientX - gameAreaRect.left;
                 moveCharacter(x);
@@ -654,7 +656,6 @@
             const characterWidth = playerCharacter.offsetWidth;
             const newPos = x - characterWidth / 2;
             
-            // Keep the character within the game area bounds
             if (newPos > 0 && newPos < gameAreaRect.width - characterWidth) {
                 playerCharacter.style.left = `${newPos}px`;
             }
@@ -662,4 +663,3 @@
     </script>
 </body>
 </html>
-�
