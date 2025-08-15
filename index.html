@@ -175,14 +175,6 @@
             transition: all 0.3s ease;
             text-align: center;
         }
-        
-        /* New loading message */
-        .loading-message {
-            font-family: var(--font-title);
-            color: var(--primary-pink);
-            font-size: 1.5rem;
-            margin-top: 20px;
-        }
 
         .character-card.selected {
             border-color: var(--primary-pink);
@@ -326,12 +318,13 @@
             <div class="input-group">
                 <label>Choose Your Character:</label>
                 <div class="character-selection">
+                    <!-- Updated to use the new PNG files -->
                     <div class="character-card selected" id="rohitCard" data-character="rohit">
-                        <img src="" alt="Rohit Character" id="rohitImage">
+                        <img src="rohit.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100/ffc0cb/ff69b4?text=Rohit'" alt="Rohit Character">
                         <p>Rohit</p>
                     </div>
                     <div class="character-card" id="venlaCard" data-character="venla">
-                        <img src="" alt="Venla Character" id="venlaImage">
+                        <img src="venla.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100/ffc0cb/ff69b4?text=Venla'" alt="Venla Character">
                         <p>Venla</p>
                     </div>
                 </div>
@@ -345,7 +338,6 @@
             </div>
             
             <button id="startGameBtn">Start Game</button>
-            <div id="loadingMessage" class="loading-message" style="display:none;">Loading images...</div>
         </div>
 
         <div class="game-screen" id="gameScreen" style="display:none;">
@@ -361,7 +353,6 @@
 
         <div class="end-screen" id="endScreen" style="display:none;">
             <h2 id="endMessage"></h2>
-            <!-- Updated to display a text/emoji instead of a missing image -->
             <div id="endAnimation"></div> 
             <button id="downloadCertificateBtn">Download Certificate</button>
             <button id="restartGameBtn">Play Again</button>
@@ -371,7 +362,6 @@
             <div class="certificate-container" id="certificate">
                 <h2>Certificate of Love</h2>
                 <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
-                <!-- Updated to use a heart emoji -->
                 <p style="font-size: 5rem; margin: 20px auto;">❤️</p>
                 <p>A bond as strong as this is unbreakable.</p>
             </div>
@@ -401,7 +391,6 @@
         
         const endMessage = document.getElementById('endMessage');
         const endAnimation = document.getElementById('endAnimation');
-        const loadingMessage = document.getElementById('loadingMessage');
         
         const p1NameInput = document.getElementById('p1Name');
         const p2NameInput = document.getElementById('p2Name');
@@ -409,8 +398,6 @@
 
         const rohitCard = document.getElementById('rohitCard');
         const venlaCard = document.getElementById('venlaCard');
-        const rohitImage = document.getElementById('rohitImage');
-        const venlaImage = document.getElementById('venlaImage');
 
         const targetHeartsInput = document.getElementById('targetHearts');
 
@@ -422,164 +409,35 @@
         let playerCharacterName;
         let targetHearts = 0;
         let isInfiniteMode = false;
-        let characterImageUrls = {};
 
-        // Use the contentFetchId for the images
-        const characterImageIds = {
-            rohit: 'uploaded:image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
-            venla: 'uploaded:image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
+        // The image URLs are now just the file names.
+        // The onerror attribute in the HTML provides a fallback.
+        const characterImageUrls = {
+            rohit: 'rohit.png',
+            venla: 'venla.png'
         };
 
-        // Replaced external images with emojis for a self-contained solution
-        const endAnimationEmojis = {
-            win: '❤️‍🔥', // Flaming heart for win
-            lose: '💔'  // Broken heart for lose
-        };
-        const heartEmoji = '❤️'; // Main heart for the game
-        
-        // Function to fetch the image data and create a local URL
-        const loadImages = async () => {
-            try {
-                // Show a loading message while fetching images
-                loadingMessage.style.display = 'block';
-                startGameBtn.disabled = true;
-
-                // Fetch both images concurrently using their unique IDs
-                const [rohitResponse, venlaResponse] = await Promise.all([
-                    fetch(characterImageIds.rohit),
-                    fetch(characterImageIds.venla)
-                ]);
-
-                // Convert the response to a Blob and create a local URL
-                const rohitBlob = await rohitResponse.blob();
-                const venlaBlob = await venlaResponse.blob();
-                
-                characterImageUrls.rohit = URL.createObjectURL(rohitBlob);
-                characterImageUrls.venla = URL.createObjectURL(venlaBlob);
-
-                // Update the src attributes of the image elements on the page
-                rohitImage.src = characterImageUrls.rohit;
-                venlaImage.src = characterImageUrls.venla;
-                
-                loadingMessage.style.display = 'none';
-                startGameBtn.disabled = false;
-
-            } catch (error) {
-                console.error('Error loading images:', error);
-                loadingMessage.textContent = 'Error loading images. Please try again.';
-            }
-        };
-
-        // Call the image loading function when the page loads
-        window.onload = loadImages;
-
-        // Listen for character selection clicks
         rohitCard.addEventListener('click', () => {
-            rohitCard.classList.add('selected');
-            venlaCard.classList.remove('selected');
-            characterSelect.value = 'rohit';
-            p1NameInput.value = 'Rohit';
-            p2NameInput.value = 'Venla';
+            selectCharacter('rohit');
         });
 
         venlaCard.addEventListener('click', () => {
-            venlaCard.classList.add('selected');
-            rohitCard.classList.remove('selected');
-            characterSelect.value = 'venla';
-            p1NameInput.value = 'Venla';
-            p2NameInput.value = 'Rohit';
+            selectCharacter('venla');
         });
 
-        const updateHeartsDisplay = () => {
-            heartsCaughtSpan.textContent = heartsCollected;
-        };
-        
-        const createHeart = () => {
-            if (isGameOver) return;
-            // Create a span with an emoji instead of an image element
-            const heart = document.createElement('span');
-            heart.textContent = heartEmoji;
-            heart.classList.add('heart');
-            heart.style.left = `${Math.random() * (gameArea.clientWidth - 30)}px`;
-            gameArea.appendChild(heart);
-
-            let top = -30;
-            const fallInterval = setInterval(() => {
-                if (isGameOver) {
-                    clearInterval(fallInterval);
-                    heart.remove();
-                    return;
-                }
-                top += 1.5; // Speed of falling hearts
-                heart.style.top = `${top}px`;
-                if (top > gameArea.clientHeight) {
-                    clearInterval(fallInterval);
-                    heart.remove();
-                    // Don't end the game if a heart is missed in infinite mode
-                    if (!isInfiniteMode) {
-                        gameOver(false);
-                    }
-                }
-            }, 10);
-            
-            // Added both mousedown and touchstart for better mobile support
-            heart.addEventListener('mousedown', catchHeart);
-            heart.addEventListener('touchstart', catchHeart);
-        };
-        
-        function catchHeart(e) {
-            e.preventDefault();
-            if (isGameOver) return;
-            heartsCollected++;
-            updateHeartsDisplay();
-            this.remove();
-            
-            if (!isInfiniteMode && heartsCollected >= targetHearts) {
-                gameOver(true);
-            }
+        function selectCharacter(characterName) {
+            document.querySelectorAll('.character-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`${characterName}Card`).classList.add('selected');
+            characterSelect.value = characterName;
         }
-        
-        const gameOver = (isWin) => {
-            isGameOver = true;
-            clearInterval(heartGenerationInterval);
-            document.querySelectorAll('.heart').forEach(heart => heart.remove());
 
-            startScreen.style.display = 'none';
-            gameScreen.style.display = 'none';
-            certificateScreen.style.display = 'none';
-            endScreen.style.display = 'flex';
-            
-            if (isWin) {
-                if (characterSelect.value === 'rohit') {
-                    endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
-                } else {
-                    endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
-                }
-                endAnimation.textContent = endAnimationEmojis.win;
-                
-                // Trigger celebratory confetti
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            } else {
-                if (characterSelect.value === 'rohit') {
-                    endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
-                } else {
-                    endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
-                }
-                endAnimation.textContent = endAnimationEmojis.lose;
-            }
-        };
-
-        const startGame = () => {
-            playerCharacterName = p1NameInput.value || 'Rohit';
-            partnerCharacterName = p2NameInput.value || 'Venla';
-            playerCharacterImage = characterImageUrls[characterSelect.value];
-            targetHearts = parseInt(targetHeartsInput.value) || 50;
-
-            isInfiniteMode = (targetHearts === 0);
+        startGameBtn.addEventListener('click', () => {
+            playerCharacterName = p1NameInput.value || 'Player';
+            partnerCharacterName = p2NameInput.value || 'Partner';
+            const selectedCharacter = characterSelect.value;
+            playerCharacterImage = characterImageUrls[selectedCharacter];
+            targetHearts = parseInt(targetHeartsInput.value, 10);
+            isInfiniteMode = targetHearts === 0;
 
             if (isInfiniteMode) {
                 targetInfo.style.display = 'none';
@@ -589,51 +447,219 @@
             }
 
             heartsCollected = 0;
+            heartsCaughtSpan.textContent = heartsCollected;
+            
             isGameOver = false;
-            updateHeartsDisplay();
-
-            startScreen.style.display = 'none';
-            gameScreen.style.display = 'flex';
-            endScreen.style.display = 'none';
-            certificateScreen.style.display = 'none';
-
+            
+            // Set the character image
             playerCharacter.src = playerCharacterImage;
 
-            heartGenerationInterval = setInterval(createHeart, 800); // Hearts appear every 0.8s
-        };
-
-        const restartGame = () => {
-            startScreen.style.display = 'flex';
-            gameScreen.style.display = 'none';
+            startScreen.style.display = 'none';
             endScreen.style.display = 'none';
             certificateScreen.style.display = 'none';
-        };
+            gameScreen.style.display = 'flex';
+            
+            startGame();
+        });
 
-        const downloadCertificate = () => {
+        restartGameBtn.addEventListener('click', () => {
+            // Clear any hearts from the previous game
+            gameArea.querySelectorAll('.heart').forEach(heart => heart.remove());
+            endScreen.style.display = 'none';
+            startScreen.style.display = 'flex';
+        });
+        
+        backToMenuBtn.addEventListener('click', () => {
+            certificateScreen.style.display = 'none';
+            startScreen.style.display = 'flex';
+        });
+
+        downloadCertificateBtn.addEventListener('click', () => {
+            endScreen.style.display = 'none';
+            certificateScreen.style.display = 'flex';
+            
             document.getElementById('certPlayerName').textContent = playerCharacterName;
             document.getElementById('certPartnerName').textContent = partnerCharacterName;
             document.getElementById('certScore').textContent = heartsCollected;
             
-            startScreen.style.display = 'none';
-            gameScreen.style.display = 'none';
-            endScreen.style.display = 'none';
-            certificateScreen.style.display = 'flex';
-            
-            // Wait for certificate screen to render, then capture with html2canvas
+            // Wait for the elements to render before taking the screenshot
             setTimeout(() => {
-                html2canvas(document.getElementById('certificate')).then(canvas => {
+                 html2canvas(document.getElementById('certificate')).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = 'love_certificate.png';
+                    link.download = 'certificate-of-love.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 });
-            }, 100);
-        };
+            }, 500);
+        });
+
+        let hearts = [];
+
+        function startGame() {
+            // Stop any existing game intervals
+            clearInterval(heartGenerationInterval);
+
+            // Start generating hearts
+            heartGenerationInterval = setInterval(() => {
+                if (isGameOver) {
+                    clearInterval(heartGenerationInterval);
+                    return;
+                }
+                createHeart();
+            }, 500);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.textContent = '❤️'; // Use a heart emoji for simplicity and reliability
+
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const startX = Math.random() * (gameAreaRect.width - 40) + 20; // Ensure heart is within bounds
+            
+            heart.style.left = `${startX}px`;
+            heart.style.top = '0px';
+            
+            gameArea.appendChild(heart);
+            
+            // Animate heart movement
+            let currentY = 0;
+            const speed = 1 + Math.random(); // hearts fall at different speeds
+            const fallInterval = setInterval(() => {
+                if (isGameOver) {
+                    clearInterval(fallInterval);
+                    heart.remove();
+                    return;
+                }
+                currentY += speed;
+                heart.style.top = `${currentY}px`;
+
+                // Check for collision with the player character
+                if (checkCollision(heart, playerCharacter)) {
+                    collectHeart(heart);
+                    clearInterval(fallInterval);
+                } else if (currentY > gameAreaRect.height) {
+                    // If heart falls off the screen
+                    clearInterval(fallInterval);
+                    heart.remove();
+                }
+            }, 10);
+        }
+
+        function checkCollision(heart, character) {
+            const heartRect = heart.getBoundingClientRect();
+            const characterRect = character.getBoundingClientRect();
+            
+            // Check for overlap
+            return (
+                heartRect.bottom >= characterRect.top &&
+                heartRect.top <= characterRect.bottom &&
+                heartRect.right >= characterRect.left &&
+                heartRect.left <= characterRect.right
+            );
+        }
+
+        function collectHeart(heart) {
+            heartsCollected++;
+            heartsCaughtSpan.textContent = heartsCollected;
+            
+            heart.remove();
+            
+            // Confetti effect on heart collection
+            confetti({
+                particleCount: 50,
+                spread: 70,
+                origin: {
+                    x: (heart.getBoundingClientRect().left + heart.getBoundingClientRect().right) / (2 * window.innerWidth),
+                    y: (heart.getBoundingClientRect().top + heart.getBoundingClientRect().bottom) / (2 * window.innerHeight)
+                }
+            });
+
+            // Check for win condition
+            if (!isInfiniteMode && heartsCollected >= targetHearts) {
+                endGame(true);
+            }
+        }
+
+        function endGame(isWin) {
+            isGameOver = true;
+            clearInterval(heartGenerationInterval);
+            gameArea.querySelectorAll('.heart').forEach(heart => heart.remove());
+
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'flex';
+            
+            if (isWin) {
+                endMessage.textContent = 'You Proved Your Love! ❤️';
+                endAnimation.innerHTML = '💖✨';
+                // Confetti for the win
+                confetti({
+                    particleCount: 200,
+                    spread: 180,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                endMessage.textContent = 'Game Over';
+                endAnimation.textContent = '�';
+            }
+            
+            // Show the final score
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.textContent = `Final Score: ${heartsCollected}`;
+        }
         
-        startGameBtn.addEventListener('click', startGame);
-        restartGameBtn.addEventListener('click', restartGame);
-        backToMenuBtn.addEventListener('click', restartGame);
-        downloadCertificateBtn.addEventListener('click', downloadCertificate);
+        // Character movement with mouse/touch
+        let isDragging = false;
+        let gameAreaRect;
+
+        gameArea.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            gameAreaRect = gameArea.getBoundingClientRect();
+        });
+
+        gameArea.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const x = e.clientX - gameAreaRect.left;
+                moveCharacter(x);
+            }
+        });
+
+        gameArea.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        gameArea.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        // Touch events for mobile
+        gameArea.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            gameAreaRect = gameArea.getBoundingClientRect();
+        });
+
+        gameArea.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent scrolling
+            if (isDragging) {
+                const x = e.touches[0].clientX - gameAreaRect.left;
+                moveCharacter(x);
+            }
+        });
+
+        gameArea.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        function moveCharacter(x) {
+            const characterWidth = playerCharacter.offsetWidth;
+            const newPos = x - characterWidth / 2;
+            
+            // Keep the character within the game area bounds
+            if (newPos > 0 && newPos < gameAreaRect.width - characterWidth) {
+                playerCharacter.style.left = `${newPos}px`;
+            }
+        }
     </script>
 </body>
 </html>
+�
