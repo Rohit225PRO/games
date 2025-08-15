@@ -175,6 +175,14 @@
             transition: all 0.3s ease;
             text-align: center;
         }
+        
+        /* New loading message */
+        .loading-message {
+            font-family: var(--font-title);
+            color: var(--primary-pink);
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
 
         .character-card.selected {
             border-color: var(--primary-pink);
@@ -319,13 +327,11 @@
                 <label>Choose Your Character:</label>
                 <div class="character-selection">
                     <div class="character-card selected" id="rohitCard" data-character="rohit">
-                        <!-- Corrected image source for uploaded file -->
-                        <img src="image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449" alt="Rohit Character">
+                        <img src="" alt="Rohit Character" id="rohitImage">
                         <p>Rohit</p>
                     </div>
                     <div class="character-card" id="venlaCard" data-character="venla">
-                        <!-- Corrected image source for uploaded file -->
-                        <img src="image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310" alt="Venla Character">
+                        <img src="" alt="Venla Character" id="venlaImage">
                         <p>Venla</p>
                     </div>
                 </div>
@@ -339,6 +345,7 @@
             </div>
             
             <button id="startGameBtn">Start Game</button>
+            <div id="loadingMessage" class="loading-message" style="display:none;">Loading images...</div>
         </div>
 
         <div class="game-screen" id="gameScreen" style="display:none;">
@@ -376,9 +383,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         // Start of self-contained JavaScript code
-        // This version removes references to missing external files (.mp3, .png, .gif)
-        // and uses emojis or text for the game's visuals.
-        
         const startScreen = document.getElementById('startScreen');
         const gameScreen = document.getElementById('gameScreen');
         const endScreen = document.getElementById('endScreen');
@@ -397,6 +401,7 @@
         
         const endMessage = document.getElementById('endMessage');
         const endAnimation = document.getElementById('endAnimation');
+        const loadingMessage = document.getElementById('loadingMessage');
         
         const p1NameInput = document.getElementById('p1Name');
         const p2NameInput = document.getElementById('p2Name');
@@ -404,6 +409,8 @@
 
         const rohitCard = document.getElementById('rohitCard');
         const venlaCard = document.getElementById('venlaCard');
+        const rohitImage = document.getElementById('rohitImage');
+        const venlaImage = document.getElementById('venlaImage');
 
         const targetHeartsInput = document.getElementById('targetHearts');
 
@@ -415,11 +422,12 @@
         let playerCharacterName;
         let targetHearts = 0;
         let isInfiniteMode = false;
+        let characterImageUrls = {};
 
-        // Use the uploaded image sources directly from the file system
-        const characterImages = {
-            rohit: 'image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
-            venla: 'image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
+        // Use the contentFetchId for the images
+        const characterImageIds = {
+            rohit: 'uploaded:image_6fa148.jpg-5f73fcc0-dcaf-41b9-b354-b608e3697449',
+            venla: 'uploaded:image_6fa169.jpg-784f019f-1ce8-4774-b053-6b81f2d12310'
         };
 
         // Replaced external images with emojis for a self-contained solution
@@ -428,6 +436,42 @@
             lose: '💔'  // Broken heart for lose
         };
         const heartEmoji = '❤️'; // Main heart for the game
+        
+        // Function to fetch the image data and create a local URL
+        const loadImages = async () => {
+            try {
+                // Show a loading message while fetching images
+                loadingMessage.style.display = 'block';
+                startGameBtn.disabled = true;
+
+                // Fetch both images concurrently using their unique IDs
+                const [rohitResponse, venlaResponse] = await Promise.all([
+                    fetch(characterImageIds.rohit),
+                    fetch(characterImageIds.venla)
+                ]);
+
+                // Convert the response to a Blob and create a local URL
+                const rohitBlob = await rohitResponse.blob();
+                const venlaBlob = await venlaResponse.blob();
+                
+                characterImageUrls.rohit = URL.createObjectURL(rohitBlob);
+                characterImageUrls.venla = URL.createObjectURL(venlaBlob);
+
+                // Update the src attributes of the image elements on the page
+                rohitImage.src = characterImageUrls.rohit;
+                venlaImage.src = characterImageUrls.venla;
+                
+                loadingMessage.style.display = 'none';
+                startGameBtn.disabled = false;
+
+            } catch (error) {
+                console.error('Error loading images:', error);
+                loadingMessage.textContent = 'Error loading images. Please try again.';
+            }
+        };
+
+        // Call the image loading function when the page loads
+        window.onload = loadImages;
 
         // Listen for character selection clicks
         rohitCard.addEventListener('click', () => {
@@ -532,7 +576,7 @@
         const startGame = () => {
             playerCharacterName = p1NameInput.value || 'Rohit';
             partnerCharacterName = p2NameInput.value || 'Venla';
-            playerCharacterImage = characterImages[characterSelect.value];
+            playerCharacterImage = characterImageUrls[characterSelect.value];
             targetHearts = parseInt(targetHeartsInput.value) || 50;
 
             isInfiniteMode = (targetHearts === 0);
@@ -593,4 +637,3 @@
     </script>
 </body>
 </html>
-
