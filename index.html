@@ -4,631 +4,627 @@
 
 <head>
 
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prove Your Love Now</title>
+    <title>Prove Your Love Now</title>
 
-    <style>
+    <style>
 
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@400;700&display=swap');
 
-        
 
-        :root {
+        :root {
 
-            --primary-pink: #ff69b4;
+            --primary-pink: #ff69b4;
 
-            --secondary-pink: #ffc0cb;
+            --secondary-pink: #ffc0cb;
 
-            --font-main: 'Poppins', sans-serif;
+            --font-main: 'Poppins', sans-serif;
 
-            --font-title: 'Dancing Script', cursive;
+            --font-title: 'Dancing Script', cursive;
 
-        }
+        }
 
 
 
-        body {
+        body {
 
-            font-family: var(--font-main);
+            font-family: var(--font-main);
 
-            background: linear-gradient(180deg, var(--secondary-pink) 0%, #fff 100%);
+            background: linear-gradient(180deg, var(--secondary-pink) 0%, #fff 100%);
 
-            display: flex;
+            display: flex;
 
-            justify-content: center;
+            justify-content: center;
 
-            align-items: center;
+            align-items: center;
 
-            min-height: 100vh;
+            min-height: 100vh;
 
-            margin: 0;
+            margin: 0;
 
-            color: #333;
+            color: #333;
 
-            position: relative;
+            position: relative;
 
-            overflow-x: hidden;
+            overflow-x: hidden;
 
-            overflow-y: auto;
+            overflow-y: auto;
 
-        }
+        }
 
 
 
-        .container {
+        .container {
 
-            text-align: center;
+            text-align: center;
 
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.8);
 
-            border-radius: 20px;
+            border-radius: 20px;
 
-            padding: 30px;
+            padding: 30px;
 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 
-            max-width: 90%;
+            max-width: 90%;
 
-            width: 500px;
+            width: 500px;
 
-            box-sizing: border-box;
+            box-sizing: border-box;
 
-            margin: 20px auto;
+            margin: 20px auto;
 
-        }
+        }
 
 
 
-        h1 {
+        h1 {
 
-            font-family: var(--font-title);
+            font-family: var(--font-title);
 
-            font-size: 3rem;
+            font-size: 3rem;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-            margin-bottom: 10px;
+            margin-bottom: 10px;
 
-        }
+        }
 
 
 
-        .game-screen {
+        .game-screen {
 
-            display: flex;
+            display: flex;
 
-            flex-direction: column;
+            flex-direction: column;
 
-            width: 100%;
+            width: 100%;
 
-            height: 100vh;
+            height: 100vh;
 
-            justify-content: flex-start;
+            justify-content: flex-start;
 
-            align-items: center;
+            align-items: center;
 
-        }
+        }
 
 
 
-        .game-area {
+        .game-area {
 
-            position: relative;
+            position: relative;
 
-            width: 100%;
+            width: 100%;
 
-            height: calc(100vh - 80px); /* Leave space for score info */
+            height: calc(100vh - 80px); /* Leave space for score info */
 
-            background: #f0f8ff;
+            background: #f0f8ff;
 
-            border: 2px solid var(--primary-pink);
+            border: 2px solid var(--primary-pink);
 
-            border-radius: 15px;
+            border-radius: 15px;
 
-            overflow: hidden;
+            overflow: hidden;
 
-            touch-action: none; /* Prevents default mobile actions */
+            touch-action: none; /* Prevents default mobile actions */
 
-        }
+        }
 
-        
 
-        .score-info {
+        .score-info {
 
-            position: absolute;
+            position: absolute;
 
-            top: 10px;
+            top: 10px;
 
-            left: 50%;
+            left: 50%;
 
-            transform: translateX(-50%);
+            transform: translateX(-50%);
 
-            z-index: 50;
+            z-index: 50;
 
-            font-size: 1.5rem;
+            font-size: 1.5rem;
 
-            font-weight: bold;
+            font-weight: bold;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.7);
 
-            padding: 5px 15px;
+            padding: 5px 15px;
 
-            border-radius: 20px;
+            border-radius: 20px;
 
-        }
+        }
 
 
 
-        .heart, .celebration-emoji {
+        .heart, .celebration-emoji {
 
-            position: absolute;
+            position: absolute;
 
-            width: 30px;
+            width: 30px;
 
-            height: 30px;
+            height: 30px;
 
-            user-select: none;
+            user-select: none;
 
-            cursor: pointer;
+            cursor: pointer;
 
-            z-index: 10;
+            z-index: 10;
 
-            animation: fade-in 0.5s ease;
+            animation: fade-in 0.5s ease;
 
-        }
+        }
 
-        
 
-        .character {
+        .character {
 
-            position: absolute;
+            position: absolute;
 
-            bottom: 0;
+            bottom: 0;
 
-            left: 50%;
+            left: 50%;
 
-            transform: translateX(-50%);
+            transform: translateX(-50%);
 
-            width: 100px;
+            width: 100px;
 
-            height: auto;
+            height: auto;
 
-            z-index: 20;
+            z-index: 20;
 
-            pointer-events: none;
+            pointer-events: none;
 
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease;
 
-        }
+        }
 
-        
 
-        @keyframes fade-in {
+        @keyframes fade-in {
 
-            from { opacity: 0; transform: scale(0.5); }
+            from { opacity: 0; transform: scale(0.5); }
 
-            to { opacity: 1; transform: scale(1); }
+            to { opacity: 1; transform: scale(1); }
 
-        }
+        }
 
 
 
-        .controls {
+        .controls {
 
-            margin-top: 20px;
+            margin-top: 20px;
 
-        }
+        }
 
 
 
-        .input-group {
+        .input-group {
 
-            margin-bottom: 15px;
+            margin-bottom: 15px;
 
-        }
+        }
 
 
 
-        label {
+        label {
 
-            display: block;
+            display: block;
 
-            margin-bottom: 5px;
+            margin-bottom: 5px;
 
-            font-weight: bold;
+            font-weight: bold;
 
-        }
+        }
 
 
 
-        select, input[type="text"], input[type="number"] {
+        select, input[type="text"], input[type="number"] {
 
-            width: 100%;
+            width: 100%;
 
-            padding: 10px;
+            padding: 10px;
 
-            border-radius: 8px;
+            border-radius: 8px;
 
-            border: 1px solid #ddd;
+            border: 1px solid #ddd;
 
-            font-size: 1rem;
+            font-size: 1rem;
 
-            box-sizing: border-box;
+            box-sizing: border-box;
 
-            font-family: var(--font-main);
+            font-family: var(--font-main);
 
-        }
+        }
 
 
 
-        button {
+        button {
 
-            background-color: var(--primary-pink);
+            background-color: var(--primary-pink);
 
-            color: white;
+            color: white;
 
-            border: none;
+            border: none;
 
-            padding: 12px 24px;
+            padding: 12px 24px;
 
-            font-size: 1.1rem;
+            font-size: 1.1rem;
 
-            border-radius: 50px;
+            border-radius: 50px;
 
-            cursor: pointer;
+            cursor: pointer;
 
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
 
-            font-weight: bold;
+            font-weight: bold;
 
-            margin: 5px;
+            margin: 5px;
 
-            font-family: var(--font-main);
+            font-family: var(--font-main);
 
-        }
+        }
 
 
 
-        button:hover {
+        button:hover {
 
-            background-color: #ff338c;
+            background-color: #ff338c;
 
-            transform: translateY(-2px);
+            transform: translateY(-2px);
 
-        }
+        }
 
 
 
-        .start-screen, .end-screen, .certificate-screen {
+        .start-screen, .end-screen, .certificate-screen {
 
-            display: flex;
+            display: flex;
 
-            flex-direction: column;
+            flex-direction: column;
 
-            justify-content: center;
+            justify-content: center;
 
-            align-items: center;
+            align-items: center;
 
-            height: 100%;
+            height: 100%;
 
-            gap: 20px;
+            gap: 20px;
 
-        }
+        }
 
-        
+        
 
-        .character-selection {
+        .character-selection {
 
-            display: flex;
+            display: flex;
 
-            flex-wrap: wrap; /* Allows wrapping on small screens */
+            flex-wrap: wrap; /* Allows wrapping on small screens */
 
-            gap: 20px;
+            gap: 20px;
 
-            justify-content: center;
+            justify-content: center;
 
-            margin-bottom: 20px;
+            margin-bottom: 20px;
 
-        }
+        }
 
 
 
-        .character-card {
+        .character-card {
 
-            cursor: pointer;
+            cursor: pointer;
 
-            border: 2px solid transparent;
+            border: 2px solid transparent;
 
-            border-radius: 15px;
+            border-radius: 15px;
 
-            padding: 10px;
+            padding: 10px;
 
-            transition: all 0.3s ease;
+            transition: all 0.3s ease;
 
-            text-align: center;
+            text-align: center;
 
-        }
+        }
 
 
 
-        .character-card.selected {
+        .character-card.selected {
 
-            border-color: var(--primary-pink);
+            border-color: var(--primary-pink);
 
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.7);
 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 
-        }
+        }
 
 
 
-        .character-card img {
+        .character-card img {
 
-            width: 100px;
+            width: 100px;
 
-            height: 100px;
+            height: 100px;
 
-            border-radius: 50%;
+            border-radius: 50%;
 
-            object-fit: cover;
+            object-fit: cover;
 
-            margin-bottom: 5px;
+            margin-bottom: 5px;
 
-        }
+        }
 
 
 
-        .certificate-container {
+        .certificate-container {
 
-            padding: 30px;
+            padding: 30px;
 
-            border: 5px solid var(--primary-pink);
+            border: 5px solid var(--primary-pink);
 
-            background: #fff;
+            background: #fff;
 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 
-            position: relative;
+            position: relative;
 
-        }
+        }
 
 
 
-        .certificate-container::before {
+        .certificate-container::before {
 
-            content: '';
+            content: '';
 
-            position: absolute;
+            position: absolute;
 
-            top: 0;
+            top: 0;
 
-            left: 0;
+            left: 0;
 
-            right: 0;
+            right: 0;
 
-            bottom: 0;
+            bottom: 0;
 
-            border: 5px solid var(--secondary-pink);
+            border: 5px solid var(--secondary-pink);
 
-            margin: 10px;
+            margin: 10px;
 
-        }
+        }
 
-        
+        
 
-        .certificate-container h2 {
+        .certificate-container h2 {
 
-            font-family: var(--font-title);
+            font-family: var(--font-title);
 
-            font-size: 2.5rem;
+            font-size: 2.5rem;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-        }
+        }
 
-        
+        
 
-        .certificate-container p {
+        .certificate-container p {
 
-            font-size: 1.2rem;
+            font-size: 1.2rem;
 
-            margin: 10px 0;
+            margin: 10px 0;
 
-        }
+        }
 
 
 
-        .certificate-container p strong {
+        .certificate-container p strong {
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-        }
+        }
 
 
 
-        .certificate-container img {
+        .certificate-container img {
 
-            max-width: 150px;
+            max-width: 150px;
 
-            margin: 20px auto;
+            margin: 20px auto;
 
-        }
+        }
 
 
 
-        .name-input-group {
+        .name-input-group {
 
-            display: flex;
+            display: flex;
 
-            justify-content: center;
+            justify-content: center;
 
-            gap: 10px;
+            gap: 10px;
 
-        }
+        }
 
-        
+        
 
-        .name-input-group input {
+        .name-input-group input {
 
-            width: 48%;
+            width: 48%;
 
-        }
+        }
 
 
 
-        #endMessage {
+        #endMessage {
 
-            font-family: var(--font-title);
+            font-family: var(--font-title);
 
-            font-size: 2.5rem;
+            font-size: 2.5rem;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-            margin-bottom: 20px;
+            margin-bottom: 20px;
 
-        }
+        }
 
 
 
-        #endAnimation {
+        #endAnimation {
 
-            max-width: 100%;
+            max-width: 100%;
 
-            height: auto;
+            height: auto;
 
-            margin-bottom: 20px;
+            margin-bottom: 20px;
 
-        }
+        }
 
 
 
-        #score-display {
+        #score-display {
 
-            font-size: 2rem;
+            font-size: 2rem;
 
-            font-weight: bold;
+            font-weight: bold;
 
-            margin-bottom: 10px;
+            margin-bottom: 10px;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-        }
+        }
 
-        
+        
 
-        .score-info {
+        .score-info {
 
-            font-size: 1.2rem;
+            font-size: 1.2rem;
 
-            font-weight: bold;
+            font-weight: bold;
 
-            color: var(--primary-pink);
+            color: var(--primary-pink);
 
-        }
+        }
 
 
 
-        /* Mobile responsiveness */
+        /* Mobile responsiveness */
 
-        @media (max-width: 600px) {
+        @media (max-width: 600px) {
 
-            h1 {
+            h1 {
 
-                font-size: 2.5rem;
+                font-size: 2.5rem;
 
-            }
+            }
 
 
 
-            .container {
+            .container {
 
-                padding: 20px;
+                padding: 20px;
 
-            }
+            }
 
 
 
-            .game-area {
+            .game-area {
 
-                height: 350px;
+                height: 350px;
 
-            }
+            }
 
-            
+            
 
-            button {
+            button {
 
-                width: 100%;
+                width: 100%;
 
-            }
+            }
 
-            
+            
 
-            .name-input-group {
+            .name-input-group {
 
-                flex-direction: column;
+                flex-direction: column;
 
-                gap: 5px;
+                gap: 5px;
 
-            }
+            }
 
 
 
-            .name-input-group input {
+            .name-input-group input {
 
-                width: 100%;
+                width: 100%;
 
-            }
+            }
 
 
 
-            .character-selection {
+            .character-selection {
 
-                flex-direction: column;
+                flex-direction: column;
 
-            }
+            }
 
-        }
+        }
 
 
 
-        #musicToggle {
+        #musicToggle {
 
-            position: fixed;
+            position: fixed;
 
-            top: 20px;
+            top: 20px;
 
-            right: 20px;
+            right: 20px;
 
-            width: 40px;
+            width: 40px;
 
-            height: 40px;
+            height: 40px;
 
-            background: var(--primary-pink);
+            background: var(--primary-pink);
 
-            color: white;
+            color: white;
 
-            border: none;
+            border: none;
 
-            border-radius: 50%;
+            border-radius: 50%;
 
-            font-size: 1.2rem;
+            font-size: 1.2rem;
 
-            cursor: pointer;
+            cursor: pointer;
 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 
-            z-index: 100;
+            z-index: 100;
 
-        }
+        }
 
-    </style>
+    </style>
 
 </head>
 
@@ -636,653 +632,640 @@
 
 
 
-    <audio id="backgroundMusic" src="/audio/Sugary-Sweet.mp3" autoplay loop></audio>
+    <audio id="backgroundMusic" src="/audio/Sugary-Sweet.mp3" autoplay loop></audio>
 
-    <button id="musicToggle">🎶</button>
+    <button id="musicToggle">🎶</button>
 
 
 
-    <div class="container" id="gameContainer">
+    <div class="container" id="gameContainer">
 
-        
+        
 
-        <div class="start-screen" id="startScreen">
+        <div class="start-screen" id="startScreen">
 
-            <h1>Prove Your Love Now</h1>
+            <h1>Prove Your Love Now</h1>
 
-            <p>Welcome to the game! Set your goals and prove your love.</p>
+            <p>Welcome to the game! Set your goals and prove your love.</p>
 
-            
+            
 
-            <div class="input-group">
+            <div class="input-group">
 
-                <label for="p1Name">Your Name:</label>
+                <label for="p1Name">Your Name:</label>
 
-                <input type="text" id="p1Name" value="Rohit">
+                <input type="text" id="p1Name" value="Rohit">
 
-            </div>
+            </div>
 
-            
+            
 
-            <div class="input-group">
+            <div class="input-group">
 
-                <label for="p2Name">Your Partner's Name:</label>
+                <label for="p2Name">Your Partner's Name:</label>
 
-                <input type="text" id="p2Name" value="Venla">
+                <input type="text" id="p2Name" value="Venla">
 
-            </div>
+            </div>
 
-            
+            
 
-            <div class="input-group">
+            <div class="input-group">
 
-                <label>Choose Your Character:</label>
+                <label>Choose Your Character:</label>
 
-                <div class="character-selection">
+                <div class="character-selection">
 
-                    <div class="character-card selected" id="rohitCard" data-character="rohit">
+                    <div class="character-card selected" id="rohitCard" data-character="rohit">
 
-                        <img src="/images/rohit.png" alt="Rohit Character">
+                        <img src="/images/rohit.png" alt="Rohit Character">
 
-                        <p>Rohit</p>
+                        <p>Rohit</p>
 
-                    </div>
+                    </div>
 
-                    <div class="character-card" id="venlaCard" data-character="venla">
+                    <div class="character-card" id="venlaCard" data-character="venla">
 
-                        <img src="/images/venla.png" alt="Venla Character">
+                        <img src="/images/venla.png" alt="Venla Character">
 
-                        <p>Venla</p>
+                        <p>Venla</p>
 
-                    </div>
+                    </div>
 
-                </div>
+                </div>
 
-                <input type="hidden" id="characterSelect" value="rohit">
+                <input type="hidden" id="characterSelect" value="rohit">
 
-            </div>
+            </div>
 
-            
+            
 
-            <div class="input-group">
+            <div class="input-group">
 
-                <label for="targetHearts">Hearts to Collect:</label>
+                <label for="targetHearts">Hearts to Collect:</label>
 
-                <input type="number" id="targetHearts" value="50" min="0">
+                <input type="number" id="targetHearts" value="50" min="0">
 
-                <small>Set a goal to play a romantic story. Choose 0 for infinite mode.</small>
+                <small>Set a goal to play a romantic story. Choose 0 for infinite mode.</small>
 
-            </div>
+            </div>
 
-            
+            
 
-            <button id="startGameBtn">Start Game</button>
+            <button id="startGameBtn">Start Game</button>
 
-        </div>
+        </div>
 
 
 
-        <div class="game-screen" id="gameScreen" style="display:none;">
+        <div class="game-screen" id="gameScreen" style="display:none;">
 
-            <div class="score-info">
+            <div class="score-info">
 
-                Hearts Caught: <span id="heartsCaught">0</span>
+                Hearts Caught: <span id="heartsCaught">0</span>
 
-                <span id="targetInfo" style="display:none;">/ <span id="heartsTarget">0</span></span>
+                <span id="targetInfo" style="display:none;">/ <span id="heartsTarget">0</span></span>
 
-            </div>
+            </div>
 
-            <div class="game-area" id="gameArea">
+            <div class="game-area" id="gameArea">
 
-                <img id="playerCharacter" class="character" src="" alt="Player Character">
+                <img id="playerCharacter" class="character" src="" alt="Player Character">
 
-            </div>
+            </div>
 
-        </div>
+        </div>
 
 
 
-        <div class="end-screen" id="endScreen" style="display:none;">
+        <div class="end-screen" id="endScreen" style="display:none;">
 
-            <h2 id="endMessage"></h2>
+            <h2 id="endMessage"></h2>
 
-            <img id="endAnimation" src="" alt="Game End Animation">
+            <img id="endAnimation" src="" alt="Game End Animation">
 
-            <button id="downloadCertificateBtn">Download Certificate</button>
+            <button id="downloadCertificateBtn">Download Certificate</button>
 
-            <button id="restartGameBtn">Play Again</button>
+            <button id="restartGameBtn">Play Again</button>
 
-        </div>
+        </div>
 
-        
+        
 
-        <div class="certificate-screen" id="certificateScreen" style="display:none;">
+        <div class="certificate-screen" id="certificateScreen" style="display:none;">
 
-            <div class="certificate-container" id="certificate">
+            <div class="certificate-container" id="certificate">
 
-                <h2>Certificate of Love</h2>
+                <h2>Certificate of Love</h2>
 
-                <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
+                <p>This certifies that <strong><span id="certPlayerName"></span></strong> has proven their love for <strong><span id="certPartnerName"></span></strong> by collecting <br><strong><span id="certScore"></span> hearts!</strong></p>
 
-                <img id="certImage" src="./images/heart.png" alt="Heart">
+                <img id="certImage" src="/images/heart.png" alt="Heart">
 
-                <p>A bond as strong as this is unbreakable.</p>
+                <p>A bond as strong as this is unbreakable.</p>
 
-            </div>
+            </div>
 
-            <button id="backToMenuBtn">Back to Menu</button>
+            <button id="backToMenuBtn">Back to Menu</button>
 
-        </div>
+        </div>
 
 
 
-    </div>
+    </div>
 
 
 
-    <!-- Added confetti.js to handle celebratory effects -->
+    <!-- Added confetti.js to handle celebratory effects -->
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <script>
+    <script>
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
 
-            const startScreen = document.getElementById('startScreen');
+            const startScreen = document.getElementById('startScreen');
 
-            const gameScreen = document.getElementById('gameScreen');
+            const gameScreen = document.getElementById('gameScreen');
 
-            const endScreen = document.getElementById('endScreen');
+            const endScreen = document.getElementById('endScreen');
 
-            const certificateScreen = document.getElementById('certificateScreen');
+            const certificateScreen = document.getElementById('certificateScreen');
 
-            const musicToggleBtn = document.getElementById('musicToggle');
+            const musicToggleBtn = document.getElementById('musicToggle');
 
-            const backgroundMusic = document.getElementById('backgroundMusic');
+            const backgroundMusic = document.getElementById('backgroundMusic');
 
 
 
-            const startGameBtn = document.getElementById('startGameBtn');
+            const startGameBtn = document.getElementById('startGameBtn');
 
-            const restartGameBtn = document.getElementById('restartGameBtn');
+            const restartGameBtn = document.getElementById('restartGameBtn');
 
-            const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
+            const downloadCertificateBtn = document.getElementById('downloadCertificateBtn');
 
-            const backToMenuBtn = document.getElementById('backToMenuBtn');
+            const backToMenuBtn = document.getElementById('backToMenuBtn');
 
-            
+            
 
-            const gameArea = document.getElementById('gameArea');
+            const gameArea = document.getElementById('gameArea');
 
-            const heartsCaughtSpan = document.getElementById('heartsCaught');
+            const heartsCaughtSpan = document.getElementById('heartsCaught');
 
-            const heartsTargetSpan = document.getElementById('heartsTarget');
+            const heartsTargetSpan = document.getElementById('heartsTarget');
 
-            const targetInfo = document.getElementById('targetInfo');
+            const targetInfo = document.getElementById('targetInfo');
 
-            const playerCharacter = document.getElementById('playerCharacter');
+            const playerCharacter = document.getElementById('playerCharacter');
 
-            
+            
 
-            const endMessage = document.getElementById('endMessage');
+            const endMessage = document.getElementById('endMessage');
 
-            const endAnimation = document.getElementById('endAnimation');
+            const endAnimation = document.getElementById('endAnimation');
 
-            
+            
 
-            const p1NameInput = document.getElementById('p1Name');
+            const p1NameInput = document.getElementById('p1Name');
 
-            const p2NameInput = document.getElementById('p2Name');
+            const p2NameInput = document.getElementById('p2Name');
 
-            const characterSelect = document.getElementById('characterSelect');
+            const characterSelect = document.getElementById('characterSelect');
 
 
 
-            const rohitCard = document.getElementById('rohitCard');
+            const rohitCard = document.getElementById('rohitCard');
 
-            const venlaCard = document.getElementById('venlaCard');
+            const venlaCard = document.getElementById('venlaCard');
 
 
 
-            const targetHeartsInput = document.getElementById('targetHearts');
+            const targetHeartsInput = document.getElementById('targetHearts');
 
 
 
-            let heartsCollected = 0;
+            let heartsCollected = 0;
 
-            let heartGenerationInterval;
+            let heartGenerationInterval;
 
-            let isGameOver = false;
+            let isGameOver = false;
 
-            let playerCharacterImage;
+            let playerCharacterImage;
 
-            let partnerCharacterName;
+            let partnerCharacterName;
 
-            let playerCharacterName;
+            let playerCharacterName;
 
-            let targetHearts = 0;
+            let targetHearts = 0;
 
-            let isInfiniteMode = false;
+            let isInfiniteMode = false;
 
 
 
-            // Corrected the image paths to be relative to the uploaded files
+            // Corrected the image paths to be relative to the uploaded files
 
-            const characterImages = {
+            const characterImages = {
 
-                rohit: '/images/rohit.png',
+                rohit: '/images/rohit.png',
 
-                venla: '/images/venla.png'
+                venla: '/images/venla.png'
 
-            };
+            };
 
-            const endAnimations = {
+            const endAnimations = {
 
-                win: '/images/win-animation.gif', // Placeholder win image
+                win: '/images/win-animation.gif',
 
-                lose: '/images/lose-animation.gif' // Placeholder lose image
+                lose: '/images/lose-animation.gif'
 
-            };
+            };
 
-            const heartImage = '/images/heart.png'; // Placeholder heart image
+            const heartImage = '/images/heart.png';
 
 
+            // Listen for character selection clicks
 
-            // Handle file access
+            rohitCard.addEventListener('click', () => {
 
-            document.querySelectorAll('img[data-filename]').forEach(img => {
+                rohitCard.classList.add('selected');
 
-                const filename = img.getAttribute('data-filename');
+                venlaCard.classList.remove('selected');
 
-                img.src = `media/${filename}`;
+                characterSelect.value = 'rohit';
 
-            });
+                p1NameInput.value = 'Rohit';
 
+                p2NameInput.value = 'Venla';
 
+            });
 
-            // Listen for character selection clicks
 
-            rohitCard.addEventListener('click', () => {
 
-                rohitCard.classList.add('selected');
+            venlaCard.addEventListener('click', () => {
 
-                venlaCard.classList.remove('selected');
+                venlaCard.classList.add('selected');
 
-                characterSelect.value = 'rohit';
+                rohitCard.classList.remove('selected');
 
-                p1NameInput.value = 'Rohit';
+                characterSelect.value = 'venla';
 
-                p2NameInput.value = 'Venla';
+                p1NameInput.value = 'Venla';
 
-            });
+                p2NameInput.value = 'Rohit';
 
+            });
 
 
-            venlaCard.addEventListener('click', () => {
 
-                venlaCard.classList.add('selected');
+            musicToggleBtn.addEventListener('click', () => {
 
-                rohitCard.classList.remove('selected');
+                if (backgroundMusic.paused) {
 
-                characterSelect.value = 'venla';
+                    backgroundMusic.play();
 
-                p1NameInput.value = 'Venla';
+                    musicToggleBtn.textContent = '🎶';
 
-                p2NameInput.value = 'Rohit';
+                } else {
 
-            });
+                    backgroundMusic.pause();
 
+                    musicToggleBtn.textContent = '🔇';
 
+                }
 
-            musicToggleBtn.addEventListener('click', () => {
+            });
 
-                if (backgroundMusic.paused) {
 
-                    backgroundMusic.play();
 
-                    musicToggleBtn.textContent = '🎶';
+            const updateHeartsDisplay = () => {
 
-                } else {
+                heartsCaughtSpan.textContent = heartsCollected;
 
-                    backgroundMusic.pause();
+            };
 
-                    musicToggleBtn.textContent = '🔇';
+            
 
-                }
+            const createCelebrationEmoji = () => {
 
-            });
+                const emoji = document.createElement('span');
 
+                emoji.textContent = '❤️'; 
 
+                emoji.classList.add('celebration-emoji');
 
-            const updateHeartsDisplay = () => {
+                emoji.style.fontSize = `${Math.random() * 20 + 10}px`;
 
-                heartsCaughtSpan.textContent = heartsCollected;
+                emoji.style.left = `${Math.random() * gameArea.clientWidth}px`;
 
-            };
+                emoji.style.top = `-${Math.random() * 50}px`;
 
-            
+                gameArea.appendChild(emoji);
 
-            const createCelebrationEmoji = () => {
 
-                const emoji = document.createElement('span');
 
-                emoji.textContent = '❤️'; 
+                let top = -50;
 
-                emoji.classList.add('celebration-emoji');
+                const fallInterval = setInterval(() => {
 
-                emoji.style.fontSize = `${Math.random() * 20 + 10}px`;
+                    top += 2;
 
-                emoji.style.left = `${Math.random() * gameArea.clientWidth}px`;
+                    emoji.style.top = `${top}px`;
 
-                emoji.style.top = `-${Math.random() * 50}px`;
+                    if (top > gameArea.clientHeight) {
 
-                gameArea.appendChild(emoji);
+                        clearInterval(fallInterval);
 
+                        emoji.remove();
 
+                    }
 
-                let top = -50;
+                }, 20);
 
-                const fallInterval = setInterval(() => {
+            };
 
-                    top += 2;
+            
 
-                    emoji.style.top = `${top}px`;
+            const createHeart = () => {
 
-                    if (top > gameArea.clientHeight) {
+                if (isGameOver) return;
 
-                        clearInterval(fallInterval);
+                const heart = document.createElement('img');
 
-                        emoji.remove();
+                heart.src = heartImage;
 
-                    }
+                heart.classList.add('heart');
 
-                }, 20);
+                heart.style.left = `${Math.random() * (gameArea.clientWidth - 30)}px`;
 
-            };
+                gameArea.appendChild(heart);
 
-            
 
-            const createHeart = () => {
 
-                if (isGameOver) return;
+                let top = -30;
 
-                const heart = document.createElement('img');
+                const fallInterval = setInterval(() => {
 
-                heart.src = heartImage;
+                    if (isGameOver) {
 
-                heart.classList.add('heart');
+                        clearInterval(fallInterval);
 
-                heart.style.left = `${Math.random() * (gameArea.clientWidth - 30)}px`;
+                        heart.remove();
 
-                gameArea.appendChild(heart);
+                        return;
 
+                    }
 
+                    top += 1.5;
 
-                let top = -30;
+                    heart.style.top = `${top}px`;
 
-                const fallInterval = setInterval(() => {
+                    if (top > gameArea.clientHeight) {
 
-                    if (isGameOver) {
+                        clearInterval(fallInterval);
 
-                        clearInterval(fallInterval);
+                        heart.remove();
 
-                        heart.remove();
+                        gameOver(false);
 
-                        return;
+                    }
 
-                    }
+                }, 10);
 
-                    top += 1.5;
+                
 
-                    heart.style.top = `${top}px`;
+                heart.addEventListener('mousedown', catchHeart);
 
-                    if (top > gameArea.clientHeight) {
+                heart.addEventListener('touchstart', catchHeart);
 
-                        clearInterval(fallInterval);
+            };
 
-                        heart.remove();
+            
 
-                        gameOver(false);
+            function catchHeart(e) {
 
-                    }
+                e.preventDefault();
 
-                }, 10);
+                if (isGameOver) return;
 
-                
+                heartsCollected++;
 
-                heart.addEventListener('mousedown', catchHeart);
+                updateHeartsDisplay();
 
-                heart.addEventListener('touchstart', catchHeart);
+                this.remove();
 
-            };
+                
 
-            
+                if (!isInfiniteMode && heartsCollected >= targetHearts) {
 
-            function catchHeart(e) {
+                    gameOver(true);
 
-                e.preventDefault();
+                }
 
-                if (isGameOver) return;
+            }
 
-                heartsCollected++;
+            
 
-                updateHeartsDisplay();
+            const gameOver = (isWin) => {
 
-                this.remove();
+                isGameOver = true;
 
-                
+                clearInterval(heartGenerationInterval);
 
-                if (!isInfiniteMode && heartsCollected >= targetHearts) {
+                document.querySelectorAll('.heart').forEach(heart => heart.remove());
 
-                    gameOver(true);
 
-                }
 
-            }
+                startScreen.style.display = 'none';
 
-            
+                gameScreen.style.display = 'none';
 
-            const gameOver = (isWin) => {
+                certificateScreen.style.display = 'none';
 
-                isGameOver = true;
+                endScreen.style.display = 'flex';
 
-                clearInterval(heartGenerationInterval);
+                
 
-                document.querySelectorAll('.heart').forEach(heart => heart.remove());
+                if (isWin) {
 
+                    if (characterSelect.value === 'rohit') {
 
+                            endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
 
-                startScreen.style.display = 'none';
+                    } else {
 
-                gameScreen.style.display = 'none';
+                            endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
 
-                certificateScreen.style.display = 'none';
+                    }
 
-                endScreen.style.display = 'flex';
+                    endAnimation.src = endAnimations.win;
 
-                
+                    
 
-                if (isWin) {
+                    // Trigger confetti effect
 
-                    if (characterSelect.value === 'rohit') {
+                    confetti({
 
-                         endMessage.innerHTML = `${p2NameInput.value} kisses ${p1NameInput.value}!`;
+                        particleCount: 100,
 
-                    } else {
+                        spread: 70,
 
-                         endMessage.innerHTML = `${p1NameInput.value} kisses ${p2NameInput.value}!`;
+                        origin: { y: 0.6 }
 
-                    }
+                    });
 
-                    endAnimation.src = endAnimations.win;
+                    
 
-                    
+                    let emojiRainInterval = setInterval(createCelebrationEmoji, 50);
 
-                    // Trigger confetti effect
+                    setTimeout(() => clearInterval(emojiRainInterval), 3000);
 
-                    confetti({
 
-                        particleCount: 100,
 
-                        spread: 70,
+                } else {
 
-                        origin: { y: 0.6 }
+                    if (characterSelect.value === 'rohit') {
 
-                    });
+                            endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
 
-                    
+                    } else {
 
-                    let emojiRainInterval = setInterval(createCelebrationEmoji, 50);
+                            endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
 
-                    setTimeout(() => clearInterval(emojiRainInterval), 3000);
+                    }
 
+                    endAnimation.src = endAnimations.lose;
 
+                }
 
-                } else {
+            };
 
-                    if (characterSelect.value === 'rohit') {
 
-                         endMessage.innerHTML = `${p1NameInput.value} proposes, but ${p2NameInput.value} is gone!`;
 
-                    } else {
+            const startGame = () => {
 
-                         endMessage.innerHTML = `${p2NameInput.value} proposes, but ${p1NameInput.value} is gone!`;
+                playerCharacterName = p1NameInput.value || 'Rohit';
 
-                    }
+                partnerCharacterName = p2NameInput.value || 'Venla';
 
-                    endAnimation.src = endAnimations.lose;
+                playerCharacterImage = characterImages[characterSelect.value];
 
-                }
+                targetHearts = parseInt(targetHeartsInput.value);
 
-            };
 
 
+                isInfiniteMode = (targetHearts === 0 || isNaN(targetHearts));
 
-            const startGame = () => {
 
-                playerCharacterName = p1NameInput.value || 'Rohit';
 
-                partnerCharacterName = p2NameInput.value || 'Venla';
+                if (isInfiniteMode) {
 
-                playerCharacterImage = characterImages[characterSelect.value];
+                    targetInfo.style.display = 'none';
 
-                targetHearts = parseInt(targetHeartsInput.value);
+                } else {
 
+                    targetInfo.style.display = 'inline';
 
+                    heartsTargetSpan.textContent = targetHearts;
 
-                isInfiniteMode = (targetHearts === 0 || isNaN(targetHearts));
+                }
 
 
 
-                if (isInfiniteMode) {
+                heartsCollected = 0;
 
-                    targetInfo.style.display = 'none';
+                isGameOver = false;
 
-                } else {
+                updateHeartsDisplay();
 
-                    targetInfo.style.display = 'inline';
 
-                    heartsTargetSpan.textContent = targetHearts;
 
-                }
+                startScreen.style.display = 'none';
 
+                gameScreen.style.display = 'flex';
 
+                endScreen.style.display = 'none';
 
-                heartsCollected = 0;
+                certificateScreen.style.display = 'none';
 
-                isGameOver = false;
 
-                updateHeartsDisplay();
 
+                playerCharacter.src = characterImages[characterSelect.value];
 
 
-                startScreen.style.display = 'none';
 
-                gameScreen.style.display = 'flex';
+                heartGenerationInterval = setInterval(createHeart, 800);
 
-                endScreen.style.display = 'none';
+            };
 
-                certificateScreen.style.display = 'none';
 
 
+            const restartGame = () => {
 
-                playerCharacter.src = `media/${playerCharacterImage}`;
+                startScreen.style.display = 'flex';
 
+                gameScreen.style.display = 'none';
 
+                endScreen.style.display = 'none';
 
-                heartGenerationInterval = setInterval(createHeart, 800);
+                certificateScreen.style.display = 'none';
 
-            };
+            };
 
 
 
-            const restartGame = () => {
+            const downloadCertificate = () => {
 
-                startScreen.style.display = 'flex';
+                document.getElementById('certPlayerName').textContent = playerCharacterName;
 
-                gameScreen.style.display = 'none';
+                document.getElementById('certPartnerName').textContent = partnerCharacterName;
 
-                endScreen.style.display = 'none';
+                document.getElementById('certScore').textContent = heartsCollected;
 
-                certificateScreen.style.display = 'none';
+                
 
-            };
+                startScreen.style.display = 'none';
 
+                gameScreen.style.display = 'none';
 
+                endScreen.style.display = 'none';
 
-            const downloadCertificate = () => {
+                certificateScreen.style.display = 'flex';
 
-                document.getElementById('certPlayerName').textContent = playerCharacterName;
+                
 
-                document.getElementById('certPartnerName').textContent = partnerCharacterName;
+                setTimeout(() => {
 
-                document.getElementById('certScore').textContent = heartsCollected;
+                    html2canvas(document.getElementById('certificate')).then(canvas => {
 
-                
+                        const link = document.createElement('a');
 
-                startScreen.style.display = 'none';
+                        link.download = 'love_certificate.png';
 
-                gameScreen.style.display = 'none';
+                        link.href = canvas.toDataURL('image/png');
 
-                endScreen.style.display = 'none';
+                        link.click();
 
-                certificateScreen.style.display = 'flex';
+                    });
 
-                
+                }, 100);
 
-                setTimeout(() => {
+            };
 
-                    html2canvas(document.getElementById('certificate')).then(canvas => {
+            
 
-                        const link = document.createElement('a');
+            startGameBtn.addEventListener('click', startGame);
 
-                        link.download = 'love_certificate.png';
+            restartGameBtn.addEventListener('click', restartGame);
 
-                        link.href = canvas.toDataURL('image/png');
+            backToMenuBtn.addEventListener('click', restartGame);
 
-                        link.click();
+            downloadCertificateBtn.addEventListener('click', downloadCertificate);
 
-                    });
+        });
 
-                }, 100);
-
-            };
-
-            
-
-            startGameBtn.addEventListener('click', startGame);
-
-            restartGameBtn.addEventListener('click', restartGame);
-
-            backToMenuBtn.addEventListener('click', restartGame);
-
-            downloadCertificateBtn.addEventListener('click', downloadCertificate);
-
-        });
-
-    </script>
+    </script>
 
 </body>
 
